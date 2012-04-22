@@ -22,17 +22,17 @@ public class AorBExperimentTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void mustSpecifyOptionA() {
-        new AorBExperiment(new ExperimentId("123"), null, optionB);
+        new AorBExperiment(new ExperimentName("123"), null, optionB);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void mustSpecifyOptionB() {
-        new AorBExperiment(new ExperimentId("123"), optionA, null);
+        new AorBExperiment(new ExperimentName("123"), optionA, null);
     }
 
     @Test
     public void canSpecifyOutcomeOfEitherOption() {
-        final AorBExperiment experiment = new AorBExperiment(new ExperimentId("123"), optionA, optionB);
+        final AorBExperiment experiment = new AorBExperiment(new ExperimentName("123"), optionA, optionB);
         final Subject johnDoe = new Subject("John Doe");
         final Subject janeDoe = new Subject("Jane Doe");
         final Subject fooBar = new Subject("Foo Bar");

@@ -13,12 +13,12 @@ public class AorBExperiment extends Experiment {
 
     /**
      * Creates the experiment
-     * @param id the experiment identifier
+     * @param name the experiment identifier
      * @param optionA the first option (A)
      * @param optionB the other option (B)
      */
-    public AorBExperiment(ExperimentId id, Option optionA, Option optionB) {
-        super(id);
+    public AorBExperiment(ExperimentName name, Option optionA, Option optionB) {
+        super(name);
         notNull(optionA, "Option A cannot be null.");
         notNull(optionB, "Option B cannot be null.");
 

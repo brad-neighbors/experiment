@@ -20,7 +20,7 @@ public class ExperimentTest {
         optionB = new Option("B");
         optionC = new Option("C");
 
-        abcExperiment = new ExampleExperiment(new ExperimentId("Home Page"));
+        abcExperiment = new ExampleExperiment(new ExperimentName("Home Page"));
         abcExperiment.addOption(optionA);
         abcExperiment.addOption(optionB);
         abcExperiment.addOption(optionC);
@@ -29,8 +29,8 @@ public class ExperimentTest {
     /** A simple extension of the abstract Experiment to test with. */
     private static class ExampleExperiment extends Experiment {
 
-        public ExampleExperiment(ExperimentId id) {
-            super(id);
+        public ExampleExperiment(ExperimentName name) {
+            super(name);
         }
     }
 

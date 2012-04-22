@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
+                   logicalFilePath="com/incandescent/lean/experiment/db/liquibase.xml">
+
+  <!-- First schema creation change set. -->
+  <changeSet id="1-create-schema" author="brad-neighbors">
+    <!-- Create the experiment table. -->
+    <createTable tableName="experiment">
+      <column name="id" type="INT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="experiment_pk"/>
+      </column>
+      <column name="experiment_name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="date_started" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="date_ended" type="TIMESTAMP WITH TIME ZONE"/>
+    </createTable>
+
+    <!-- Experiments must have unique names. -->
+    <addUniqueConstraint tableName="experiment" columnNames="experiment_name" constraintName="experiment_name_uk"/>
+
+    <!-- Create the experiment options table. -->
+    <createTable tableName="option">
+      <column name="id" type="INT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="experiment_options_pk"/>
+      </column>
+      <column name="experiment_id" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="option_name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="outcome_count" type="BIGINT" defaultValue="0">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="option" baseColumnNames="experiment_id"
+                             referencedTableName="experiment" referencedColumnNames="id"
+                             constraintName="option_experiment_fk" deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION"/>
+
+    <!-- Experiments must have unique option names. -->
+    <addUniqueConstraint tableName="option" columnNames="experiment_id, option_name"
+                         constraintName="option_experiment_name_uk"/>
+
+    <!-- Create the subject outcomes table. -->
+    <createTable tableName="subject_outcome">
+      <column name="id" type="INT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="subject_outcomes_pk"/>
+      </column>
+      <column name="option_id" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="subject" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="subject_outcome" baseColumnNames="option_id"
+                             referencedTableName="option" referencedColumnNames="id"
+                             constraintName="subject_outcome_option_fk"/>
+
+    <!-- A subject can only be specified to have one outcome per experiment. -->
+    <addUniqueConstraint tableName="subject_outcome" columnNames="option_id, subject"
+                         constraintName="subject_outcome_subject_uk"/>
+
+  </changeSet>
+</databaseChangeLog>

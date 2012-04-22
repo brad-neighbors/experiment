@@ -12,7 +12,7 @@ public class MultiOutcomeExperimentTest {
 
     @Test
     public void atTheMomentNotMuchMoreThanAnExtensionOfAnExperiment() {
-        final MultiOutcomeExperiment experiment = new MultiOutcomeExperiment(new ExperimentId("123"));
+        final MultiOutcomeExperiment experiment = new MultiOutcomeExperiment(new ExperimentName("123"));
 
         final Option option1 = new Option("1");
         final Option option2 = new Option("2");

@@ -28,7 +28,7 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public abstract class Experiment {
 
-    protected ExperimentId id;
+    protected ExperimentName name;
     protected Date startDate;
     private Date endDate;
     protected final Map<Subject, Option> outcomes = new HashMap<Subject, Option>();
@@ -40,11 +40,11 @@ public abstract class Experiment {
      * <p/>
      * At this point, options can be added, subjects can be specified to receive certain outcomes, but not outcomes
      * can be evaluated (either with a subject or randomly) until the experiment is started.
-     * @param id the experiment identifier
+     * @param name the experiment identifier
      */
-    public Experiment(ExperimentId id) {
-        notNull(id, "Experiments require a non null identifier.");
-        this.id = id;
+    public Experiment(ExperimentName name) {
+        notNull(name, "Experiments require a non null identifier.");
+        this.name = name;
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class Experiment {
     protected void addOption(Option option) {
         if (experimentHasStarted()) {
             throw new ExperimentStartedException(
-              format("Cannot add option %s as experiment %s has already been started", option, id));
+              format("Cannot add option %s as experiment %s has already been started", option, name));
         }
         options.add(option);
     }
@@ -66,7 +66,7 @@ public abstract class Experiment {
      */
     protected void specifySubjectOutcome(Subject subject, Option option) {
         if (!options.contains(option)) {
-            throw new UnknownOptionException(format("Option %s not known in experiment %s", option, id));
+            throw new UnknownOptionException(format("Option %s not known in experiment %s", option, name));
         }
 
         outcomes.put(subject, option);
@@ -85,11 +85,11 @@ public abstract class Experiment {
     public Option evaluateOutcomeFor(Subject subject) {
         if (!experimentHasStarted()) {
             throw new ExperimentNotYetStartedException(
-              format("Cannot evaluate outcome for %s in experiment %s because it hasn't started yet", subject, id));
+              format("Cannot evaluate outcome for %s in experiment %s because it hasn't started yet", subject, name));
         }
         if (experimentHasEnded()) {
             throw new ExperimentEndedException(
-              format("Cannot evaluate outcome for %s in experiment %s because it has ended.", subject, id));
+              format("Cannot evaluate outcome for %s in experiment %s because it has ended.", subject, name));
         }
         if (outcomes.containsKey(subject)) {
             final Option option = outcomes.get(subject);
@@ -108,11 +108,11 @@ public abstract class Experiment {
     public Option randomOutcome() {
         if (!experimentHasStarted()) {
             throw new ExperimentNotYetStartedException(
-              format("Cannot get a random outcome in experiment %s because it hasn't started yet", id));
+              format("Cannot get a random outcome in experiment %s because it hasn't started yet", name));
         }
         if (experimentHasEnded()) {
             throw new ExperimentEndedException(
-              format("Cannot get a random outcome in experiment %s because it has ended.", id));
+              format("Cannot get a random outcome in experiment %s because it has ended.", name));
         }
         final int index = new Random().nextInt(options.size());
         final Option chosen = (Option) options.toArray()[index];
@@ -159,5 +159,12 @@ public abstract class Experiment {
 
     private boolean experimentHasEnded() {
         return endDate != null;
+    }
+
+    /**
+     * @return The experiment's name.
+     */
+    public ExperimentName getName() {
+        return name;
     }
 }

@@ -8,10 +8,10 @@ public class MultiOutcomeExperiment extends Experiment {
 
     /**
      * Creates the experiment.
-     * @param experimentId the experiment identifier
+     * @param experimentName the experiment identifier
      */
-    public MultiOutcomeExperiment(ExperimentId experimentId) {
-        super(experimentId);
+    public MultiOutcomeExperiment(ExperimentName experimentName) {
+        super(experimentName);
     }
 
     @Override
