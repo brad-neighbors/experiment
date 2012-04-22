@@ -8,7 +8,10 @@ import com.incandescent.value.*;
  */
 public class Option extends StringValue {
 
-    public Option(String id) {
-        super(id);
+    private Integer id;
+    private Integer experimentId;
+
+    public Option(String optionName) {
+        super(optionName);
     }
 }

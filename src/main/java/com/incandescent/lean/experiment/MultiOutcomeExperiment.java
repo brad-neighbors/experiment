@@ -1,5 +1,7 @@
 package com.incandescent.lean.experiment;
 
+import java.util.Date;
+
 /**
  * Encapsulates an experiment that can have multiple outcomes (beyond just two).
  * @author Brad Neighbors

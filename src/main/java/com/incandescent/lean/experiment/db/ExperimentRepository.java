@@ -2,13 +2,12 @@ package com.incandescent.lean.experiment.db;
 
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
-import com.incandescent.lean.experiment.MultiOutcomeExperiment;
 
 /**
  * Specifies how experiments may be persisted.
  * @author Brad Neighbors
  */
-public interface ExperimentPersistence {
+public interface ExperimentRepository {
 
     /**
      * Stores (insert or update) an experiment in a database.
@@ -17,9 +16,9 @@ public interface ExperimentPersistence {
     void store(Experiment experiment);
 
     /**
-     * Finds the MultiOutcomeExperiment with the specified name.
+     * Finds the Experiment with the specified name.
      * @param name the experiment name
      * @return The experiment, or <code>null</code> if not found.
      */
-    MultiOutcomeExperiment findMultiOutcomeExperimentBy(ExperimentName name);
+    Experiment findExperimentBy(ExperimentName name);
 }

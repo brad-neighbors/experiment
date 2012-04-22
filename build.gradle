@@ -12,6 +12,8 @@ dependencies {
   compile "org.springframework:spring-core:$SPRING_VERSION"
   compile "org.springframework:spring-jdbc:$SPRING_VERSION"
   compile "commons-dbcp:commons-dbcp:1.3+"
+  compile "postgresql:postgresql:9.1+"
+  compile "log4j:log4j:1.2.16"
   testCompile "com.h2database:h2:1.3.158"
   testCompile "org.springframework:spring-test:$SPRING_VERSION"
   testCompile "org.testng:testng:6.5.2"

@@ -28,9 +28,10 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public abstract class Experiment {
 
+    private Integer id;
     protected ExperimentName name;
-    protected Date startDate;
-    private Date endDate;
+    protected Date dateStarted;
+    protected Date dateEnded;
     protected final Map<Subject, Option> outcomes = new HashMap<Subject, Option>();
     protected final Set<Option> options = new HashSet<Option>();
     private Map<Option, Integer> outcomeCounts = new HashMap<Option, Integer>();
@@ -137,11 +138,11 @@ public abstract class Experiment {
      * can begin.
      */
     public void start() {
-        startDate = new Date();
+        dateStarted = new Date();
     }
 
     private boolean experimentHasStarted() {
-        return startDate != null;
+        return dateStarted != null;
     }
 
     private void incrementChosenCountFor(Option chosen) {
@@ -154,11 +155,11 @@ public abstract class Experiment {
 
     /** Ends the experiment.  After this no further outcomes may be evaluated. */
     public void end() {
-        endDate = new Date();
+        dateEnded = new Date();
     }
 
     private boolean experimentHasEnded() {
-        return endDate != null;
+        return dateEnded != null;
     }
 
     /**
@@ -166,5 +167,27 @@ public abstract class Experiment {
      */
     public ExperimentName getName() {
         return name;
+    }
+
+    /**
+     * @return The date the experiment started, or <code>null</code> if not yet started.
+     */
+    public Date startedOn() {
+        return dateStarted;
+    }
+
+    /**
+     * @return The date the experiment ended, or <code>null</code> if it has not yet ended.
+     */
+    public Date endedOn() {
+        return dateEnded;
+    }
+
+    public int countOptions() {
+        return options.size();
+    }
+
+    public int countSubjectOutcomes() {
+        return outcomes.size();
     }
 }

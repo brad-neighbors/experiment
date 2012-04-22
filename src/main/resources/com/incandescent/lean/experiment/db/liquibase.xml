@@ -14,7 +14,10 @@
         <constraints nullable="false" primaryKey="true" primaryKeyName="experiment_pk"/>
       </column>
       <column name="experiment_name" type="varchar(200)">
-        <constraints nullable="false"/>
+        <constraints nullable="false" />
+      </column>
+      <column name="class_name" type="varchar(200)">
+        <constraints nullable="false" />
       </column>
       <column name="date_started" type="TIMESTAMP WITH TIME ZONE"/>
       <column name="date_ended" type="TIMESTAMP WITH TIME ZONE"/>
@@ -24,7 +27,7 @@
     <addUniqueConstraint tableName="experiment" columnNames="experiment_name" constraintName="experiment_name_uk"/>
 
     <!-- Create the experiment options table. -->
-    <createTable tableName="option">
+    <createTable tableName="experiment_option">
       <column name="id" type="INT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true" primaryKeyName="experiment_options_pk"/>
       </column>
@@ -39,13 +42,13 @@
       </column>
     </createTable>
 
-    <addForeignKeyConstraint baseTableName="option" baseColumnNames="experiment_id"
+    <addForeignKeyConstraint baseTableName="experiment_option" baseColumnNames="experiment_id"
                              referencedTableName="experiment" referencedColumnNames="id"
                              constraintName="option_experiment_fk" deferrable="false" initiallyDeferred="false"
                              onDelete="NO ACTION"/>
 
     <!-- Experiments must have unique option names. -->
-    <addUniqueConstraint tableName="option" columnNames="experiment_id, option_name"
+    <addUniqueConstraint tableName="experiment_option" columnNames="experiment_id, option_name"
                          constraintName="option_experiment_name_uk"/>
 
     <!-- Create the subject outcomes table. -->
@@ -62,7 +65,7 @@
     </createTable>
 
     <addForeignKeyConstraint baseTableName="subject_outcome" baseColumnNames="option_id"
-                             referencedTableName="option" referencedColumnNames="id"
+                             referencedTableName="experiment_option" referencedColumnNames="id"
                              constraintName="subject_outcome_option_fk"/>
 
     <!-- A subject can only be specified to have one outcome per experiment. -->

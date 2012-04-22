@@ -8,6 +8,9 @@ import com.incandescent.value.*;
  */
 public class Subject extends StringValue {
 
+    private Integer id;
+    private Integer optionId;
+
     public Subject(String value) {
         super(value);
     }
