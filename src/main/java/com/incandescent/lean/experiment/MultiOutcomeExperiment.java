@@ -2,6 +2,7 @@ package com.incandescent.lean.experiment;
 
 /**
  * Encapsulates an experiment that can have multiple outcomes (beyond just two).
+ * @author Brad Neighbors
  */
 public class MultiOutcomeExperiment extends Experiment {
 

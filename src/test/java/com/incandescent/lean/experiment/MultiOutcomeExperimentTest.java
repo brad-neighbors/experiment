@@ -5,6 +5,9 @@ import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+/**
+ * @author Brad Neighbors
+ */
 public class MultiOutcomeExperimentTest {
 
     @Test

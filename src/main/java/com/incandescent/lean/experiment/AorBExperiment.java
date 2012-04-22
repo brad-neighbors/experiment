@@ -4,6 +4,7 @@ import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * Encapsulates an experiment that can only have two options, the classic "A/B" test.
+ * @author Brad Neighbors
  */
 public class AorBExperiment extends Experiment {
 

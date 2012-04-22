@@ -23,6 +23,8 @@ import static org.apache.commons.lang.Validate.notNull;
  * Experiments can have their options (possible outcomes) expanded before the experiment has begun, but not after.
  * Furthermore, subjects can be specified to have certain outcomes throughout the lifecycle of the experiment.
  * And one the experiment has ended, subjects cannot have their outcomes evaluated anymore either.
+ *
+ * @author Brad Neighbors
  */
 public abstract class Experiment {
 

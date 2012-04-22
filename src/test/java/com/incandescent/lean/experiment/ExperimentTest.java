@@ -6,6 +6,9 @@ import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
+/**
+ * @author Brad Neighbors
+ */
 public class ExperimentTest {
 
     private Option optionA, optionB, optionC;
