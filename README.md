@@ -43,7 +43,7 @@ The following example illustrates an A/B test where different home pages are dis
 	// server IP address in "serverIp" variable
 	Option homePageFile = homePageExperiment.evaluateOutcomeFor(new Subject(serverIp));
 	
-	render(homePageFile);
+	render(homePageFile.val());
 	...
 </pre>
 
