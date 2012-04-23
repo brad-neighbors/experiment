@@ -187,7 +187,7 @@ public abstract class Experiment {
         return options.size();
     }
 
-    public int countSubjectOutcomes() {
+    public int countSpecifiedSubjectOutcomes() {
         return outcomes.size();
     }
 }

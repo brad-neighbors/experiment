@@ -1,4 +1,4 @@
-package com.incandescent.lean.experiment.db.jdbc;
+package com.incandescent.lean.experiment.db.relational.jdbc;
 
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
  * @author Brad Neighbors
  */
 @ContextConfiguration(locations = {"classpath:com/incandescent/lean/experiment/db/testDb.xml"})
-public class JdbcExperimentPersistenceTest extends AbstractTransactionalTestNGSpringContextTests {
+public class JbdcExperimentRepositoryTest extends AbstractTransactionalTestNGSpringContextTests {
 
     private ExperimentName homePageExperimentName = new ExperimentName("Home Page");
     private MultiOutcomeExperiment experiment;
@@ -111,7 +111,7 @@ public class JdbcExperimentPersistenceTest extends AbstractTransactionalTestNGSp
 
         assertThat(persistedExperiment, is(notNullValue()));
         assertThat(persistedExperiment.countOptions(), is(2));
-        assertThat(persistedExperiment.countSubjectOutcomes(), is(2));
+        assertThat(persistedExperiment.countSpecifiedSubjectOutcomes(), is(2));
         assertThat(persistedExperiment.countOutcomesFor(option1), is(2));
         assertThat(persistedExperiment.countOutcomesFor(option2), is(1));
     }

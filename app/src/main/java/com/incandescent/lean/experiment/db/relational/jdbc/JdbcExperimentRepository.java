@@ -1,4 +1,4 @@
-package com.incandescent.lean.experiment.db.jdbc;
+package com.incandescent.lean.experiment.db.relational.jdbc;
 
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.incandescent.lean.experiment.db.jdbc.ExperimentReflectionUtils.*;
-import static com.incandescent.lean.experiment.db.jdbc.OptionReflectionUtils.getOptionId;
-import static com.incandescent.lean.experiment.db.jdbc.OptionReflectionUtils.setOptionField;
-import static com.incandescent.lean.experiment.db.jdbc.SubjectReflectionUtils.setSubjectField;
+import static com.incandescent.lean.experiment.db.relational.jdbc.ExperimentReflectionUtils.*;
+import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.getOptionId;
+import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.setOptionField;
+import static com.incandescent.lean.experiment.db.relational.jdbc.SubjectReflectionUtils.setSubjectField;
 
 /**
  * Implements persisting experiments using the Spring JDBC template.
@@ -190,15 +190,15 @@ public class JdbcExperimentRepository implements ExperimentRepository {
     @Override
     public Experiment findExperimentBy(ExperimentName name) {
         String sql =
-          "SELECT e.id, " +
+          "SELECT e.id as experiment_id, " +
             "     e.experiment_name, " +
             "     e.class_name, " +
             "     e.date_started, " +
             "     e.date_ended, " +
-            "     o.id, " +
+            "     o.id as option_id, " +
             "     o.option_name, " +
             "     o.outcome_count, " +
-            "     so.id, " +
+            "     so.id as subject_outcome_id, " +
             "     so.option_id, " +
             "     so.subject " +
             "FROM experiment e " +
@@ -217,6 +217,7 @@ public class JdbcExperimentRepository implements ExperimentRepository {
             final Map<String, Experiment> experiments = new HashMap<String, Experiment>();
             while (rs.next()) {
 
+                final Integer experimentId = rs.getInt("experiment_id");
                 final String experimentNameStr = rs.getString("experiment_name");
                 final String className = rs.getString("class_name");
                 final Date dateStarted = rs.getDate("date_started");
@@ -232,12 +233,14 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                         experiment = new MultiOutcomeExperiment(new ExperimentName(experimentNameStr));
                         setExperimentField(experiment, "dateStarted", dateStarted);
                         setExperimentField(experiment, "dateEnded", dateEnded);
+                        setExperimentField(experiment, "id", experimentId);
                         experiments.put(experimentNameStr, experiment);
                     }
                 }
 
                 final Map<String, Option> options = new HashMap<String, Option>();
                 final String optionNameStr = rs.getString("option_name");
+                final Integer optionId = rs.getInt("option_id");
                 if (optionNameStr != null) {
                     Option option = null;
                     if (options.containsKey(optionNameStr)) {
@@ -245,6 +248,7 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                         option = options.get(optionNameStr);
                     } else {
                         option = new Option(optionNameStr);
+                        setOptionField(option, "id", optionId);
                         options.put(optionNameStr, option);
                     }
                     final Set<Option> options1 = getOptions(experiment);
@@ -253,9 +257,12 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                     outcomeCounts.put(option, rs.getInt("outcome_count"));
 
                     final String subjectStr = rs.getString("subject");
+                    final Integer subjectId = rs.getInt("subject_outcome_id");
                     if (subjectStr != null) {
                         final Map<Subject, Option> outcomes = getOutcomes(experiment);
-                        outcomes.put(new Subject(subjectStr), option);
+                        final Subject newSubject = new Subject(subjectStr);
+                        setSubjectField(newSubject, "id", subjectId);
+                        outcomes.put(newSubject, option);
                     }
                 }
 

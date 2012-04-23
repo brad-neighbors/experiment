@@ -1,0 +1,6 @@
+app/.idea
+app/.idea/*
+app/.idea/**/*
+app/out
+.DS_Store
+**/.DS_Store

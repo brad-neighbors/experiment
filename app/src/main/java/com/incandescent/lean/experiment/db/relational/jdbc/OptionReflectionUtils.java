@@ -1,4 +1,4 @@
-package com.incandescent.lean.experiment.db.jdbc;
+package com.incandescent.lean.experiment.db.relational.jdbc;
 
 import com.incandescent.lean.experiment.Option;
 
