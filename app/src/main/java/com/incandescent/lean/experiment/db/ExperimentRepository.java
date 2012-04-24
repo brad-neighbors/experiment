@@ -1,6 +1,6 @@
 package com.incandescent.lean.experiment.db;
 
-import com.incandescent.lean.experiment.AorBExperiment;
+import com.incandescent.lean.experiment.ABExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -36,5 +36,5 @@ public interface ExperimentRepository {
      * @param name the experiment name
      * @return The experiment, or, <code>null</code> if not found.
      */
-    AorBExperiment findAorBExperimentBy(ExperimentName name);
+    ABExperiment findAorBExperimentBy(ExperimentName name);
 }

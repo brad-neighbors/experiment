@@ -10,7 +10,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Brad Neighbors
  */
-public class AorBExperimentTest {
+public class ABExperimentTest {
 
     private Option optionA;
     private Option optionB;
@@ -23,17 +23,17 @@ public class AorBExperimentTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void mustSpecifyOptionA() {
-        new AorBExperiment(new ExperimentName("123"), null, optionB);
+        new ABExperiment(new ExperimentName("123"), null, optionB);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void mustSpecifyOptionB() {
-        new AorBExperiment(new ExperimentName("123"), optionA, null);
+        new ABExperiment(new ExperimentName("123"), optionA, null);
     }
 
     @Test
     public void canSpecifyOutcomeOfEitherOption() {
-        final AorBExperiment experiment = new AorBExperiment(new ExperimentName("123"), optionA, optionB);
+        final ABExperiment experiment = new ABExperiment(new ExperimentName("123"), optionA, optionB);
         final Subject johnDoe = new Subject("John Doe");
         final Subject janeDoe = new Subject("Jane Doe");
         final Subject fooBar = new Subject("Foo Bar");
@@ -54,7 +54,7 @@ public class AorBExperimentTest {
     @Test
     public void canAddOnlyTwoOptions() {
         final ExperimentName name = new ExperimentName("home page test");
-        final AorBExperiment experiment = new AorBExperiment(name);
+        final ABExperiment experiment = new ABExperiment(name);
         experiment.addOption(optionA);
         experiment.addOption(optionB);
 
@@ -64,7 +64,7 @@ public class AorBExperimentTest {
         } catch (IllegalArgumentException iae) {
         }
 
-        final AorBExperiment experiment2 = new AorBExperiment(name, optionA, optionB);
+        final ABExperiment experiment2 = new ABExperiment(name, optionA, optionB);
         try {
             experiment2.addOption(new Option("page3"));
             fail("Should have only allowed adding two options to an AorBExperiment.");
@@ -75,7 +75,7 @@ public class AorBExperimentTest {
     @Test
     public void cannotStartExperimentUnlessBothOptionsHaveBeenSet() {
         final ExperimentName name = new ExperimentName("home page test");
-        final AorBExperiment experiment = new AorBExperiment(name);
+        final ABExperiment experiment = new ABExperiment(name);
         experiment.addOption(optionA);
 
         try {
@@ -88,7 +88,7 @@ public class AorBExperimentTest {
     @Test
     public void cannotSpecifyASubjectOutcomeForOptionAIfNotYetSet() {
         final ExperimentName name = new ExperimentName("home page test");
-        final AorBExperiment experiment = new AorBExperiment(name);
+        final ABExperiment experiment = new ABExperiment(name);
         try {
             experiment.specifySubjectOutcomeA(new Subject("server1"));
             fail("Should have not allowed outcome A to be specified because it has not been set");
@@ -100,7 +100,7 @@ public class AorBExperimentTest {
     @Test
     public void cannotSpecifyBSubjectOutcomeForOptionAIfNotYetSet() {
         final ExperimentName name = new ExperimentName("home page test");
-        final AorBExperiment experiment = new AorBExperiment(name);
+        final ABExperiment experiment = new ABExperiment(name);
         experiment.addOption(optionA);
 
         try {

@@ -1,6 +1,6 @@
 package com.incandescent.lean.experiment.db.relational.jdbc;
 
-import com.incandescent.lean.experiment.AorBExperiment;
+import com.incandescent.lean.experiment.ABExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -224,10 +224,10 @@ public class JdbcExperimentRepository implements ExperimentRepository {
     }
 
     @Override
-    public AorBExperiment findAorBExperimentBy(ExperimentName name) {
+    public ABExperiment findAorBExperimentBy(ExperimentName name) {
         final Experiment experiment = findExperimentBy(name);
         if (experiment != null) {
-            return experiment.getClass().isAssignableFrom(AorBExperiment.class) ? (AorBExperiment) experiment : null;
+            return experiment.getClass().isAssignableFrom(ABExperiment.class) ? (ABExperiment) experiment : null;
         }
         return null;
     }
@@ -258,8 +258,8 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                         setExperimentField(experiment, "id", experimentId);
                         experiments.put(experimentNameStr, experiment);
 
-                    } else if (AorBExperiment.class.getSimpleName().equals(className)) {
-                        experiment = new AorBExperiment(new ExperimentName(experimentNameStr));
+                    } else if (ABExperiment.class.getSimpleName().equals(className)) {
+                        experiment = new ABExperiment(new ExperimentName(experimentNameStr));
                         setExperimentField(experiment, "dateStarted", dateStarted);
                         setExperimentField(experiment, "dateEnded", dateEnded);
                         setExperimentField(experiment, "id", experimentId);

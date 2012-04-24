@@ -6,7 +6,7 @@ import static org.apache.commons.lang.Validate.notNull;
  * Encapsulates an experiment that can only have two options, the classic "A/B" test.
  * @author Brad Neighbors
  */
-public class AorBExperiment extends Experiment {
+public class ABExperiment extends Experiment {
 
     /**
      * Creates the experiment with the two options.
@@ -14,7 +14,7 @@ public class AorBExperiment extends Experiment {
      * @param optionA the first option (A)
      * @param optionB the other option (B)
      */
-    public AorBExperiment(ExperimentName name, Option optionA, Option optionB) {
+    public ABExperiment(ExperimentName name, Option optionA, Option optionB) {
         super(name);
         addOption(optionA);
         addOption(optionB);
@@ -24,7 +24,7 @@ public class AorBExperiment extends Experiment {
      * Creates the experiment with the two options to be supplied later.
      * @param name the experiment name
      */
-    public AorBExperiment(ExperimentName name) {
+    public ABExperiment(ExperimentName name) {
         super(name);
     }
 

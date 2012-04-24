@@ -1,6 +1,6 @@
 package com.incandescent.lean.experiment.run;
 
-import com.incandescent.lean.experiment.AorBExperiment;
+import com.incandescent.lean.experiment.ABExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -107,7 +107,7 @@ public class RunExperimentTests extends AbstractTransactionalTestNGSpringContext
 
         Option page1 = new Option("home.html");
         Option page2 = new Option("new_home.html");
-        AorBExperiment experiment = new AorBExperiment(name, page1, page2);
+        ABExperiment experiment = new ABExperiment(name, page1, page2);
 
         Subject server1 = new Subject("host server 1");
         Subject server2 = new Subject("host server 3");

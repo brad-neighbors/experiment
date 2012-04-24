@@ -1,6 +1,6 @@
 package com.incandescent.lean.experiment.db.relational.jdbc;
 
-import com.incandescent.lean.experiment.AorBExperiment;
+import com.incandescent.lean.experiment.ABExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -50,7 +50,7 @@ public class JdbcExperimentRepositoryTest extends AbstractTransactionalTestNGSpr
     public void canFindAorBExperiments() {
         Option page1 = new Option("home_1.html");
         Option page2 = new Option("home_2.html");
-        AorBExperiment aorBExperiment = new AorBExperiment(homePageExperimentName, page1, page2);
+        ABExperiment aorBExperiment = new ABExperiment(homePageExperimentName, page1, page2);
         aorBExperiment.start();
 
         repository.store(aorBExperiment);
