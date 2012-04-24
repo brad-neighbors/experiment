@@ -1,5 +1,6 @@
 package com.incandescent.lean.experiment.db.relational.jdbc;
 
+import com.incandescent.lean.experiment.AorBExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import static com.incandescent.lean.experiment.db.relational.jdbc.ExperimentReflectionUtils.*;
 import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.getOptionId;
+import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.getOptionSequence;
 import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.setOptionField;
 import static com.incandescent.lean.experiment.db.relational.jdbc.SubjectReflectionUtils.setSubjectField;
 
@@ -110,23 +112,24 @@ public class JdbcExperimentRepository implements ExperimentRepository {
         setSubjectField(eachSubject, "optionId", optionId);
     }
 
-    private void insertOption(final Option eachOption, final Experiment experiment) {
+    private void insertOption(final Option option, final Experiment experiment) {
         final Map<Option, Integer> outcomeCounts = getOutcomeCounts(experiment);
         final Integer experimentId = getExperimentId(experiment);
         KeyHolder optionKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = con.prepareCall("INSERT INTO experiment_option (experiment_id, option_name, outcome_count) VALUES (?, ?, ?)");
+                PreparedStatement ps = con.prepareCall("INSERT INTO experiment_option (experiment_id, option_name, outcome_count, option_sequence) VALUES (?, ?, ?, ?)");
                 ps.setInt(1, experimentId);
-                ps.setString(2, eachOption.val());
-                ps.setInt(3, outcomeCounts.get(eachOption) != null ? outcomeCounts.get(eachOption) : 0);
+                ps.setString(2, option.val());
+                ps.setInt(3, outcomeCounts.get(option) != null ? outcomeCounts.get(option) : 0);
+                ps.setInt(4, getOptionSequence(option));
                 return ps;
             }
         }, optionKeyHolder);
 
-        setOptionField(eachOption, "id", optionKeyHolder.getKey().intValue());
-        setOptionField(eachOption, "experimentId", experimentId);
+        setOptionField(option, "id", optionKeyHolder.getKey().intValue());
+        setOptionField(option, "experimentId", experimentId);
     }
 
     private void handleUpdate(final Experiment existingExperiment, final Experiment experimentToPersist) {
@@ -198,16 +201,35 @@ public class JdbcExperimentRepository implements ExperimentRepository {
             "     o.id as option_id, " +
             "     o.option_name, " +
             "     o.outcome_count, " +
+            "     o.option_sequence, " +
             "     so.id as subject_outcome_id, " +
             "     so.option_id, " +
             "     so.subject " +
             "FROM experiment e " +
             "LEFT OUTER JOIN experiment_option o ON o.experiment_id = e.id " +
             "LEFT OUTER JOIN subject_outcome so ON so.option_id = o.id " +
-            "ORDER BY e.id, o.id, so.id";
+            "ORDER BY e.id, o.option_sequence, so.id";
 
         final List<Experiment> experiments = jdbcTemplate.query(sql, new ExperimentResultSetExtractor());
         return experiments.isEmpty() ? null : experiments.get(0);
+    }
+
+    @Override
+    public MultiOutcomeExperiment findMultiOutcomeExperimentBy(ExperimentName name) {
+        final Experiment experiment = findExperimentBy(name);
+        if (experiment != null) {
+            return experiment.getClass().isAssignableFrom(MultiOutcomeExperiment.class) ? (MultiOutcomeExperiment) experiment : null;
+        }
+        return null;
+    }
+
+    @Override
+    public AorBExperiment findAorBExperimentBy(ExperimentName name) {
+        final Experiment experiment = findExperimentBy(name);
+        if (experiment != null) {
+            return experiment.getClass().isAssignableFrom(AorBExperiment.class) ? (AorBExperiment) experiment : null;
+        }
+        return null;
     }
 
     private static class ExperimentResultSetExtractor implements ResultSetExtractor<List<Experiment>> {
@@ -229,8 +251,15 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                     experiment = experiments.get(experimentNameStr);
                 } else {
                     // new experiment in the result set
-                    if ("MultiOutcomeExperiment".equals(className)) {
+                    if (MultiOutcomeExperiment.class.getSimpleName().equals(className)) {
                         experiment = new MultiOutcomeExperiment(new ExperimentName(experimentNameStr));
+                        setExperimentField(experiment, "dateStarted", dateStarted);
+                        setExperimentField(experiment, "dateEnded", dateEnded);
+                        setExperimentField(experiment, "id", experimentId);
+                        experiments.put(experimentNameStr, experiment);
+
+                    } else if (AorBExperiment.class.getSimpleName().equals(className)) {
+                        experiment = new AorBExperiment(new ExperimentName(experimentNameStr));
                         setExperimentField(experiment, "dateStarted", dateStarted);
                         setExperimentField(experiment, "dateEnded", dateEnded);
                         setExperimentField(experiment, "id", experimentId);
@@ -241,6 +270,7 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                 final Map<String, Option> options = new HashMap<String, Option>();
                 final String optionNameStr = rs.getString("option_name");
                 final Integer optionId = rs.getInt("option_id");
+                final Integer optionSequence = rs.getInt("option_sequence");
                 if (optionNameStr != null) {
                     Option option = null;
                     if (options.containsKey(optionNameStr)) {
@@ -249,6 +279,8 @@ public class JdbcExperimentRepository implements ExperimentRepository {
                     } else {
                         option = new Option(optionNameStr);
                         setOptionField(option, "id", optionId);
+                        setOptionField(option, "sequence", optionSequence);
+                        setOptionField(option, "experimentId", experimentId);
                         options.put(optionNameStr, option);
                     }
                     final Set<Option> options1 = getOptions(experiment);

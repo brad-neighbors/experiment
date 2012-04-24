@@ -62,9 +62,9 @@ public class ExperimentTest {
         abcExperiment.start();
         abcExperiment.randomOutcome();
         assertThat(1, is(anyOf(
-          equalTo(abcExperiment.countOutcomesFor(optionA)),
-          equalTo(abcExperiment.countOutcomesFor(optionB)),
-          equalTo(abcExperiment.countOutcomesFor(optionC)))));
+          equalTo(abcExperiment.countOutcomesOf(optionA)),
+          equalTo(abcExperiment.countOutcomesOf(optionB)),
+          equalTo(abcExperiment.countOutcomesOf(optionC)))));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ExperimentTest {
         for (int i = 0; i < 10; i++) {
             assertThat(abcExperiment.evaluateOutcomeFor(johnDoe), is(optionB));
         }
-        assertThat(abcExperiment.countOutcomesFor(optionB), is(10));
+        assertThat(abcExperiment.countOutcomesOf(optionB), is(10));
 
         Subject janeDoe = new Subject("Jane Doe");
         abcExperiment.specifySubjectOutcome(janeDoe, optionC);
@@ -85,7 +85,7 @@ public class ExperimentTest {
         for (int i = 0; i < 100; i++) {
             assertThat(abcExperiment.evaluateOutcomeFor(janeDoe), is(optionC));
         }
-        assertThat(abcExperiment.countOutcomesFor(optionC), is(equalTo(100)));
+        assertThat(abcExperiment.countOutcomesOf(optionC), is(equalTo(100)));
     }
 
     @Test(expectedExceptions = ExperimentNotYetStartedException.class)

@@ -1,6 +1,7 @@
 app/.idea
 app/.idea/*
 app/.idea/**/*
+app/app.iml
 app/out
 .DS_Store
 **/.DS_Store

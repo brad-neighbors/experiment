@@ -73,4 +73,13 @@
                          constraintName="subject_outcome_subject_uk"/>
 
   </changeSet>
+
+  <changeSet id="2-make-options-orderable" author="brad-neighbors">
+    <addColumn tableName="experiment_option">
+      <column name="option_sequence" type="INT" defaultValue="0">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

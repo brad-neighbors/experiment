@@ -1,7 +1,5 @@
 package com.incandescent.lean.experiment;
 
-import java.util.Date;
-
 /**
  * Encapsulates an experiment that can have multiple outcomes (beyond just two).
  * @author Brad Neighbors
@@ -24,5 +22,10 @@ public class MultiOutcomeExperiment extends Experiment {
     @Override
     public void specifySubjectOutcome(Subject subject, Option option) {
         super.specifySubjectOutcome(subject, option);
+    }
+
+    @Override
+    public int countOptions() {
+        return super.countOptions();
     }
 }

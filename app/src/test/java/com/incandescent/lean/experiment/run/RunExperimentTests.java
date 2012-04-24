@@ -1,5 +1,6 @@
 package com.incandescent.lean.experiment.run;
 
+import com.incandescent.lean.experiment.AorBExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
@@ -66,29 +67,29 @@ public class RunExperimentTests extends AbstractTransactionalTestNGSpringContext
 
         repository.store(experiment);
 
-        experiment = repository.findExperimentBy(name);
+        MultiOutcomeExperiment multiExperiment = repository.findMultiOutcomeExperimentBy(name);
 
-        assertThat("Experiment has 3 options", experiment.countOptions(), is(3));
-        assertThat("Experiment has 3 specified subject outcomes", experiment.countSpecifiedSubjectOutcomes(), is(3));
-        assertThat("Experiment had homePage1 evaluated 4 times", experiment.countOutcomesFor(homePage1), is(4));
-        assertThat("Experiment had homePage2 evaluated 2 times", experiment.countOutcomesFor(homePage2), is(2));
-        assertThat("Experiment had homePage3 evaluated once", experiment.countOutcomesFor(homePage3), is(1));
+        assertThat("Experiment has 3 options", multiExperiment.countOptions(), is(3));
+        assertThat("Experiment has 3 specified subject outcomes", multiExperiment.countSpecifiedSubjectOutcomes(), is(3));
+        assertThat("Experiment had homePage1 evaluated 4 times", multiExperiment.countOutcomesOf(homePage1), is(4));
+        assertThat("Experiment had homePage2 evaluated 2 times", multiExperiment.countOutcomesOf(homePage2), is(2));
+        assertThat("Experiment had homePage3 evaluated once", multiExperiment.countOutcomesOf(homePage3), is(1));
 
         try {
-            ((MultiOutcomeExperiment)experiment).addOption(new Option("home4.html"));
+            multiExperiment.addOption(new Option("home4.html"));
             fail("Should not have been able to create a new option in an already running experiment");
         } catch (IllegalStateException ise) {
         }
 
-        experiment.end();
+        multiExperiment.end();
 
         try {
-            experiment.evaluateOutcomeFor(server1);
+            multiExperiment.evaluateOutcomeFor(server1);
             fail("Cannot evaluate outcome because experiment has ended.");
         } catch (IllegalStateException ise) {
         }
 
-        repository.store(experiment);
+        repository.store(multiExperiment);
 
         experiment = repository.findExperimentBy(name);
 
@@ -97,5 +98,55 @@ public class RunExperimentTests extends AbstractTransactionalTestNGSpringContext
             fail("Cannot evaluate outcome because experiment has ended.");
         } catch (IllegalStateException ise) {
         }
+    }
+
+    @Test
+    public void canRunAorBExperiment() {
+        final ExperimentName name = new ExperimentName("Home Page Test");
+        assertThat(repository.findAorBExperimentBy(name), is(nullValue()));
+
+        Option page1 = new Option("home.html");
+        Option page2 = new Option("new_home.html");
+        AorBExperiment experiment = new AorBExperiment(name, page1, page2);
+
+        Subject server1 = new Subject("host server 1");
+        Subject server2 = new Subject("host server 3");
+        Subject server3 = new Subject("host server 2");
+
+        experiment.specifySubjectOutcomeA(server1);
+        experiment.specifySubjectOutcomeA(server2);
+        experiment.specifySubjectOutcomeB(server3);
+
+        repository.store(experiment);
+
+        experiment = repository.findAorBExperimentBy(name);
+
+        assertThat(experiment.countSpecifiedSubjectOutcomes(), is(3));
+
+        assertThat(experiment.startedOn(), is(nullValue()));
+        assertThat(experiment.endedOn(), is(nullValue()));
+
+        try {
+            experiment.evaluateOutcomeFor(server1);
+            fail("Cannot evaluate outcome in an experiment that hasn't started.");
+        } catch (IllegalStateException ise){}
+
+        experiment.start();
+
+        assertThat(experiment.evaluateOutcomeFor(server1), is(page1));
+        assertThat(experiment.evaluateOutcomeFor(server2), is(page1));
+        assertThat(experiment.evaluateOutcomeFor(server3), is(page2));
+
+        experiment.end();
+
+        repository.store(experiment);
+
+        experiment = repository.findAorBExperimentBy(name);
+
+        assertThat(experiment.startedOn(), is(notNullValue()));
+        assertThat(experiment.endedOn(), is(notNullValue()));
+
+        assertThat(experiment.countOutcomesOfOptionA(), is(2));
+        assertThat(experiment.countOutcomesOfOptionB(), is(1));
     }
 }

@@ -64,4 +64,35 @@ public class OptionReflectionUtils {
         }
         return null;
     }
+
+    /**
+     * Gets the option's sequence.
+     * @param option the option
+     * @return the order of the option in the experiment
+     */
+    static Integer getOptionSequence(Option option) {
+        try {
+            final Field field = Option.class.getDeclaredField("sequence");
+            final boolean wasAccessible = field.isAccessible();
+            if (!wasAccessible) {
+                field.setAccessible(true);
+            }
+
+            Object sequence = field.get(option);
+
+            if (!wasAccessible) {
+                field.setAccessible(false);
+            }
+
+            if (sequence != null) {
+                return (Integer) sequence;
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // we explicitly set accessibility
+        }
+        return null;
+    }
+
 }

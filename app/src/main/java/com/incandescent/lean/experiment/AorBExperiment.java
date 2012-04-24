@@ -8,25 +8,37 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public class AorBExperiment extends Experiment {
 
-    private final Option optionA;
-    private final Option optionB;
-
     /**
-     * Creates the experiment
+     * Creates the experiment with the two options.
      * @param name the experiment identifier
      * @param optionA the first option (A)
      * @param optionB the other option (B)
      */
     public AorBExperiment(ExperimentName name, Option optionA, Option optionB) {
         super(name);
-        notNull(optionA, "Option A cannot be null.");
-        notNull(optionB, "Option B cannot be null.");
-
-        this.optionA = optionA;
         addOption(optionA);
-
-        this.optionB = optionB;
         addOption(optionB);
+    }
+
+    /**
+     * Creates the experiment with the two options to be supplied later.
+     * @param name the experiment name
+     */
+    public AorBExperiment(ExperimentName name) {
+        super(name);
+    }
+
+    @Override
+    public void addOption(Option option) {
+        notNull(option, "Parameter option cannot be null.");
+        if (options.size() == 2) {
+            throw new IllegalArgumentException("Cannot add more than two options in an AorBExperiment");
+        }
+        if (options.isEmpty()) {
+            super.addOption(option);
+        } else {
+            super.addOption(option);
+        }
     }
 
     /**
@@ -34,7 +46,10 @@ public class AorBExperiment extends Experiment {
      * @param subject the subject to receive option A during the experiment
      */
     public void specifySubjectOutcomeA(Subject subject) {
-        super.specifySubjectOutcome(subject, optionA);
+        if (options.size() == 0) {
+            throw new IllegalStateException("Cannot specify an outcome of option A until set.");
+        }
+        super.specifySubjectOutcome(subject, options.first());
     }
 
     /**
@@ -42,20 +57,31 @@ public class AorBExperiment extends Experiment {
      * @param subject the subject to receive option B during the experiment
      */
     public void specifySubjectOutcomeB(Subject subject) {
-        super.specifySubjectOutcome(subject, optionB);
+        if (options.size() < 2) {
+            throw new IllegalStateException("Cannot specify an outcome of option B until set.");
+        }
+        super.specifySubjectOutcome(subject, options.last());
     }
 
     /**
      * @return The number of times option A was evaluated during the experiment.
      */
-    public int countOptionAOutcomes() {
-        return super.countOutcomesFor(optionA);
+    public int countOutcomesOfOptionA() {
+        return super.countOutcomesOf(options.first());
     }
 
     /**
      * @return The number of times option B was evaluated during the experiment.
      */
-    public int countOptionBOutcomes() {
-        return super.countOutcomesFor(optionB);
+    public int countOutcomesOfOptionB() {
+        return super.countOutcomesOf(options.last());
+    }
+
+    @Override
+    public void start() {
+        if (options.size() != 2) {
+            throw new IllegalStateException("Cannot start AorBExperiment until both options have been set.");
+        }
+        super.start();
     }
 }

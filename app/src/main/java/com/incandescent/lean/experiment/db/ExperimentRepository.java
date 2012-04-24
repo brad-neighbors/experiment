@@ -1,7 +1,9 @@
 package com.incandescent.lean.experiment.db;
 
+import com.incandescent.lean.experiment.AorBExperiment;
 import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
+import com.incandescent.lean.experiment.MultiOutcomeExperiment;
 
 /**
  * Specifies how experiments may be persisted.
@@ -21,4 +23,18 @@ public interface ExperimentRepository {
      * @return The experiment, or <code>null</code> if not found.
      */
     Experiment findExperimentBy(ExperimentName name);
+
+    /**
+     * Finds the MultiOutcomeExeperiment with the specified name.
+     * @param name the experiment name
+     * @return The experiment, or <code>null</code> if not found.
+     */
+    MultiOutcomeExperiment findMultiOutcomeExperimentBy(ExperimentName name);
+
+    /**
+     * Finds the AorBExperiment with the specified name.
+     * @param name the experiment name
+     * @return The experiment, or, <code>null</code> if not found.
+     */
+    AorBExperiment findAorBExperimentBy(ExperimentName name);
 }

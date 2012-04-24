@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang.Validate.notNull;
@@ -18,7 +20,7 @@ import static org.apache.commons.lang.Validate.notNull;
  * <code>addOption(Option)</code>.
  * <p/>
  * The experiment can also be interrogated to see how many subjects have received certain outcomes using
- * <code>countOutcomesFor(Option)</code>.
+ * <code>countOutcomesOf(Option)</code>.
  * <p/>
  * Experiments can have their options (possible outcomes) expanded before the experiment has begun, but not after.
  * Furthermore, subjects can be specified to have certain outcomes throughout the lifecycle of the experiment.
@@ -33,7 +35,7 @@ public abstract class Experiment {
     protected Date dateStarted;
     protected Date dateEnded;
     protected final Map<Subject, Option> outcomes = new HashMap<Subject, Option>();
-    protected final Set<Option> options = new HashSet<Option>();
+    protected final SortedSet<Option> options = new TreeSet<Option>();
     private Map<Option, Integer> outcomeCounts = new HashMap<Option, Integer>();
 
     /**
@@ -52,11 +54,12 @@ public abstract class Experiment {
      * Adds a possible outcome to this experiment.
      * @param option the possible outcome
      */
-    protected void addOption(Option option) {
+    public void addOption(Option option) {
         if (experimentHasStarted()) {
             throw new ExperimentStartedException(
               format("Cannot add option %s as experiment %s has already been started", option, name));
         }
+        option.sequence = options.size() + 1;
         options.add(option);
     }
 
@@ -126,7 +129,7 @@ public abstract class Experiment {
      * @param option the possible outcome
      * @return The number of times the outcome happened in the experiment.
      */
-    public int countOutcomesFor(Option option) {
+    public int countOutcomesOf(Option option) {
         if (outcomeCounts.containsKey(option)) {
             return outcomeCounts.get(option);
         }
@@ -183,7 +186,7 @@ public abstract class Experiment {
         return dateEnded;
     }
 
-    public int countOptions() {
+    protected int countOptions() {
         return options.size();
     }
 
