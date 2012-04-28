@@ -5,6 +5,8 @@ import com.incandescent.lean.experiment.Experiment;
 import com.incandescent.lean.experiment.ExperimentName;
 import com.incandescent.lean.experiment.MultiOutcomeExperiment;
 
+import java.util.List;
+
 /**
  * Specifies how experiments may be persisted.
  * @author Brad Neighbors
@@ -16,6 +18,13 @@ public interface ExperimentRepository {
      * @param experiment the experiment to persist
      */
     void store(Experiment experiment);
+
+    /**
+     * Finds experiment names using a name search term.
+     * @param nameMatch the search term
+     * @return Any matching experiment names, or an empty list if none found.
+     */
+    List<ExperimentName> findExperimentNamesBy(String nameMatch);
 
     /**
      * Finds the Experiment with the specified name.

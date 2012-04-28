@@ -33,7 +33,7 @@ public class ABExperimentTest {
 
     @Test
     public void canSpecifyOutcomeOfEitherOption() {
-        final ABExperiment experiment = new ABExperiment(new ExperimentName("123"), optionA, optionB);
+        final ABExperiment experiment = new ABExperiment(new ExperimentName("12345"), optionA, optionB);
         final Subject johnDoe = new Subject("John Doe");
         final Subject janeDoe = new Subject("Jane Doe");
         final Subject fooBar = new Subject("Foo Bar");

@@ -30,10 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.incandescent.lean.experiment.db.relational.jdbc.ExperimentReflectionUtils.*;
-import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.getOptionId;
-import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.getOptionSequence;
-import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.setOptionField;
+import static com.incandescent.lean.experiment.db.relational.jdbc.OptionReflectionUtils.*;
 import static com.incandescent.lean.experiment.db.relational.jdbc.SubjectReflectionUtils.setSubjectField;
+import static org.apache.commons.lang.Validate.notEmpty;
 
 /**
  * Implements persisting experiments using the Spring JDBC template.
@@ -208,10 +207,35 @@ public class JdbcExperimentRepository implements ExperimentRepository {
             "FROM experiment e " +
             "LEFT OUTER JOIN experiment_option o ON o.experiment_id = e.id " +
             "LEFT OUTER JOIN subject_outcome so ON so.option_id = o.id " +
+            "WHERE e.experiment_name = '" + name + "' " +
             "ORDER BY e.id, o.option_sequence, so.id";
 
         final List<Experiment> experiments = jdbcTemplate.query(sql, new ExperimentResultSetExtractor());
         return experiments.isEmpty() ? null : experiments.get(0);
+    }
+
+    @Override
+    public List<ExperimentName> findExperimentNamesBy(String searchTerm) {
+        notEmpty(searchTerm, "Argument searchTerm cannot be empty");
+        if (searchTerm.length() < ExperimentName.MINIMUM_LENGTH) {
+            return new ArrayList<ExperimentName>();
+        }
+        final String sql =
+          "SELECT e.experiment_name " +
+            "FROM experiment e " +
+            "WHERE e.experiment_name LIKE '" + searchTerm + "%' " +
+            "ORDER BY e.experiment_name";
+
+        return jdbcTemplate.query(sql, new ResultSetExtractor<List<ExperimentName>>() {
+            @Override
+            public List<ExperimentName> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                final List<ExperimentName> names = new ArrayList<ExperimentName>();
+                while (rs.next()) {
+                    names.add(new ExperimentName(rs.getString("experiment_name")));
+                }
+                return names;
+            }
+        });
     }
 
     @Override

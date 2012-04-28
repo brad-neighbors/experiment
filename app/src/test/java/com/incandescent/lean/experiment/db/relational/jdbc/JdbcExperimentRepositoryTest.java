@@ -12,8 +12,11 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 /**
  * @author Brad Neighbors
@@ -166,5 +169,34 @@ public class JdbcExperimentRepositoryTest extends AbstractTransactionalTestNGSpr
         final Experiment retrievedExperiment = repository.findExperimentBy(homePageExperimentName);
         assertThat(retrievedExperiment.startedOn(), is(notNullValue()));
         assertThat(retrievedExperiment.endedOn(), is(notNullValue()));
+    }
+
+    @Test
+    public void findsManyExperimentsByNameMatching() {
+        String commonPrefix = "homePageTest";
+        Experiment googleHomePageTest = new ABExperiment(new ExperimentName(commonPrefix + "_google"));
+        Experiment twitterHomePageTest = new ABExperiment(new ExperimentName(commonPrefix + "_twitter"));
+        Experiment loginBehaviorTest = new ABExperiment(new ExperimentName("loginTest"));
+
+        assertThat(repository.findExperimentNamesBy(commonPrefix).size(), is(0));
+
+        repository.store(googleHomePageTest);
+        repository.store(twitterHomePageTest);
+        repository.store(loginBehaviorTest);
+
+        final List<ExperimentName> names = repository.findExperimentNamesBy(commonPrefix);
+        assertThat(names.size(), is(2));
+        assertThat(names, hasItem(new ExperimentName("homePageTest_google")));
+        assertThat(names, hasItem(new ExperimentName("homePageTest_twitter")));
+    }
+
+    @Test
+    public void findingExperimentNamesRequiresMinimumSearchTermLength() {
+        Experiment ex = new ABExperiment(new ExperimentName("homePageTest_google"));
+        repository.store(ex);
+
+        assertThat(repository.findExperimentNamesBy("hom").size(), is(0));
+        assertThat(repository.findExperimentNamesBy("home").size(), is(0));
+        assertThat(repository.findExperimentNamesBy("homeP").size(), is(1));
     }
 }
