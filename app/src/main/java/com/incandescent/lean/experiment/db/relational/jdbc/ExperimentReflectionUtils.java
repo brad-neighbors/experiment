@@ -15,6 +15,7 @@ import java.util.Set;
  * on the Experiment domain class.
  * @author Brad Neighbors
  */
+@SuppressWarnings("unchecked")
 public class ExperimentReflectionUtils {
 
     /**

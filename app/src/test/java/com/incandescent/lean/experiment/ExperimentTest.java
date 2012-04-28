@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Brad Neighbors
  */
+@SuppressWarnings("unchecked")
 public class ExperimentTest {
 
     private Option optionA, optionB, optionC;
